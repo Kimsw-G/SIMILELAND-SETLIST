@@ -1,0 +1,637 @@
+---
+import { concerts as rawConcerts } from '../data/concerts.json';
+
+const concerts = rawConcerts
+  .map(c => ({ ...c, dateObj: new Date(c.date) }))
+  .sort((a, b) => b.dateObj - a.dateObj);
+---
+
+<style is:global>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap');
+
+  :root {
+    --sl-bg: #f5f0e8;
+    --sl-surface: #ffffff;
+    --sl-border: #e0d8cc;
+    --sl-border-hover: #b0a898;
+    --sl-text: #1a1710;
+    --sl-text-muted: #7a7060;
+    --sl-text-faint: #b0a898;
+    --sl-accent: #d4522a;
+    --sl-accent-bg: #fdf0eb;
+    --sl-accent-text: #922010;
+    --sl-teal: #2a7a6a;
+    --sl-teal-bg: #eaf4f1;
+    --sl-yellow: #e8c840;
+    --sl-yellow-bg: #fdf8e1;
+    --sl-purple: #6a3aaa;
+    --sl-purple-bg: #f0eafa;
+  }
+
+  body {
+    background: var(--sl-bg);
+  }
+
+  .sl-wrap {
+    /* padding: 2.5rem 0 5rem; */
+    font-family: 'Space Grotesk', sans-serif;
+    /* max-width: 680px; */
+  }
+
+  .sl-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px dashed var(--sl-border);
+  }
+
+  .sl-artist {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--sl-text);
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+
+  .sl-artist span {
+    color: var(--sl-accent);
+  }
+
+  .sl-sub {
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    margin-top: 5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── Nav buttons ── */
+  .sl-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .sl-nav-btn {
+    padding: 8px 22px;
+    border-radius: 99px;
+    border: 1.5px solid var(--sl-border);
+    background: var(--sl-surface);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sl-text-muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .sl-nav-btn:hover {
+    border-color: var(--sl-accent);
+    color: var(--sl-accent);
+    background: var(--sl-accent-bg);
+  }
+
+  .sl-nav-btn.active {
+    background: var(--sl-accent);
+    color: #fff;
+    border-color: var(--sl-accent);
+  }
+  /* ──────────────── */
+
+  .sl-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--sl-text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .sl-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .sl-chip {
+    padding: 7px 18px;
+    border-radius: 99px;
+    border: 1.5px solid var(--sl-border);
+    background: var(--sl-surface);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sl-text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sl-chip:hover {
+    border-color: var(--sl-accent);
+    color: var(--sl-accent);
+    background: var(--sl-accent-bg);
+  }
+
+  .sl-chip.active {
+    background: var(--sl-accent);
+    color: #fff;
+    border-color: var(--sl-accent);
+  }
+
+  .sl-concert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .sl-concert-card {
+    padding: 14px 16px;
+    border: 1.5px solid var(--sl-border);
+    border-radius: 16px;
+    background: var(--sl-surface);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sl-concert-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--sl-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s;
+  }
+
+  .sl-concert-card:hover {
+    border-color: var(--sl-border-hover);
+    background: var(--sl-accent-bg);
+  }
+
+  .sl-concert-card:hover::before,
+  .sl-concert-card.active::before {
+    transform: scaleX(1);
+  }
+
+  .sl-concert-card.active {
+    border-color: var(--sl-accent);
+    background: var(--sl-accent-bg);
+  }
+
+  .sl-cc-venue {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sl-text);
+  }
+
+  .sl-cc-date {
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    margin-top: 3px;
+  }
+
+  .sl-cc-count {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--sl-accent-text);
+    background: var(--sl-accent-bg);
+    border: 1px solid #f0c8b8;
+    border-radius: 99px;
+    padding: 2px 9px;
+  }
+
+  .sl-setlist-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px dashed var(--sl-border);
+  }
+
+  .sl-setlist-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sl-text);
+  }
+
+  .sl-setlist-date {
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    background: var(--sl-bg);
+    border: 1px solid var(--sl-border);
+    border-radius: 99px;
+    padding: 2px 10px;
+  }
+
+  .sl-song-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sl-song-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.12s;
+    border: 1.5px solid transparent;
+  }
+
+  .sl-song-row:hover {
+    background: var(--sl-surface);
+    border-color: var(--sl-border);
+  }
+
+  .sl-song-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sl-song-num {
+    font-size: 11px;
+    color: var(--sl-text-faint);
+    width: 16px;
+    text-align: right;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .sl-song-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--sl-text);
+  }
+
+  .sl-song-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sl-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .sl-pill-first {
+    background: var(--sl-teal-bg);
+    color: var(--sl-teal);
+    border: 1px solid #b8dfd8;
+  }
+
+  .sl-pill-days {
+    background: var(--sl-yellow-bg);
+    color: #7a6010;
+    border: 1px solid #e8d870;
+  }
+
+  .sl-caret {
+    font-size: 14px;
+    color: var(--sl-text-faint);
+  }
+
+  .sl-modal-wrap {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(20, 15, 5, 0.5);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sl-modal-wrap.open {
+    display: flex;
+  }
+
+  .sl-modal {
+    background: var(--sl-surface);
+    border-radius: 20px;
+    border: 2px solid var(--sl-border);
+    width: 380px;
+    max-width: 90vw;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .sl-modal-top-bar {
+    height: 4px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--sl-accent) 0px, var(--sl-accent) 20px,
+      var(--sl-yellow) 20px, var(--sl-yellow) 40px,
+      var(--sl-teal) 40px, var(--sl-teal) 60px,
+      var(--sl-purple) 60px, var(--sl-purple) 80px
+    );
+    flex-shrink: 0;
+  }
+
+  .sl-modal-head {
+    padding: 16px 20px 12px;
+    border-bottom: 1.5px dashed var(--sl-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .sl-modal-song {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--sl-text);
+  }
+
+  .sl-modal-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sl-border);
+    background: var(--sl-bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--sl-text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    flex-shrink: 0;
+    transition: all 0.12s;
+  }
+
+  .sl-modal-close:hover {
+    border-color: var(--sl-accent);
+    color: var(--sl-accent);
+    background: var(--sl-accent-bg);
+  }
+
+  .sl-modal-summary {
+    padding: 10px 20px;
+    background: var(--sl-bg);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--sl-text-muted);
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--sl-border);
+  }
+
+  .sl-modal-summary b {
+    color: var(--sl-text);
+  }
+
+  .sl-modal-body {
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  .sl-hist-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--sl-border);
+    transition: background 0.1s;
+  }
+
+  .sl-hist-row:last-child {
+    border-bottom: none;
+  }
+
+  .sl-hist-row:hover {
+    background: var(--sl-bg);
+  }
+
+  .sl-hist-idx {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--sl-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .sl-hist-date {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sl-text);
+  }
+
+  .sl-hist-venue {
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    margin-top: 2px;
+  }
+
+  .sl-hist-order {
+    font-size: 11px;
+    color: var(--sl-text-faint);
+    margin-top: 2px;
+  }
+
+  .sl-fade-in {
+    animation: slFadeIn 0.2s ease;
+  }
+
+  @keyframes slFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .sl-info{
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    margin-bottom: 35px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+</style>
+
+<meta charset="UTF-8" />
+
+<div class="sl-wrap">
+  <div class="sl-header">
+	<div class="sl-info">문의 @castlewook56</div>
+    <div class="sl-artist">심아일랜드<span>.</span></div>
+    <div class="sl-sub">setlist archive</div>
+  </div>
+
+  <!-- 네비게이션 버튼 -->
+  <nav class="sl-nav">
+    <a href="/" class="sl-nav-btn active">셋리스트</a>
+    <a href="/album" class="sl-nav-btn">앨범</a>
+  </nav>
+
+  <div class="sl-section-label">연도</div>
+  <div class="sl-chip-row" id="year-chips"></div>
+
+  <div id="concert-section" style="display:none">
+    <div class="sl-section-label">공연</div>
+    <div class="sl-concert-grid" id="concert-grid"></div>
+  </div>
+
+  <div id="setlist-section" style="display:none">
+    <div class="sl-setlist-header">
+      <span class="sl-setlist-title" id="setlist-title"></span>
+      <span class="sl-setlist-date" id="setlist-date"></span>
+    </div>
+    <div class="sl-song-list" id="song-list"></div>
+  </div>
+</div>
+
+<div class="sl-modal-wrap" id="modal-wrap">
+  <div class="sl-modal">
+    <div class="sl-modal-top-bar"></div>
+    <div class="sl-modal-head">
+      <div class="sl-modal-song" id="modal-song"></div>
+      <button class="sl-modal-close" id="modal-close">×</button>
+    </div>
+    <div class="sl-modal-summary" id="modal-summary"></div>
+    <div class="sl-modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ concerts }}>
+  let selYear = null;
+  let selDate = null;
+
+  const sorted = concerts
+    .map(c => ({ ...c, dateObj: new Date(c.date) }))
+    .sort((a, b) => b.dateObj - a.dateObj);
+
+  function getYears() {
+    return [...new Set(sorted.map(c => c.dateObj.getFullYear()))].sort((a, b) => b - a);
+  }
+
+  function byYear(y) {
+    return sorted.filter(c => c.dateObj.getFullYear() === y);
+  }
+
+  function daysSince(song, date) {
+    const cur = new Date(date);
+    const prev = sorted.find(c => new Date(c.date) < cur && c.setlist.includes(song));
+    if (!prev) return null;
+    return Math.round((cur - new Date(prev.date)) / 86400000);
+  }
+
+  function getHistory(song) {
+    return sorted
+      .filter(c => c.setlist.includes(song))
+      .map(c => ({ ...c, order: c.setlist.indexOf(song) + 1 }));
+  }
+
+  function renderYears() {
+    const el = document.getElementById('year-chips');
+    el.innerHTML = getYears().map(y =>
+      `<div class="sl-chip${selYear === y ? ' active' : ''}" data-y="${y}">${y}년</div>`
+    ).join('');
+    el.querySelectorAll('.sl-chip').forEach(c =>
+      c.addEventListener('click', () => pickYear(Number(c.dataset.y)))
+    );
+  }
+
+  function pickYear(y) {
+    selYear = y;
+    selDate = null;
+    renderYears();
+    const grid = document.getElementById('concert-grid');
+    grid.innerHTML = byYear(y).map(c =>
+      `<div class="sl-concert-card" data-date="${c.date}">
+        <div class="sl-cc-venue">${c.venue}</div>
+        <div class="sl-cc-date">${c.date}</div>
+        <div><span class="sl-cc-count">${c.setlist.length}곡</span></div>
+      </div>`
+    ).join('');
+    grid.querySelectorAll('.sl-concert-card').forEach(c =>
+      c.addEventListener('click', () => pickConcert(c.dataset.date))
+    );
+    document.getElementById('concert-section').style.display = 'block';
+    document.getElementById('setlist-section').style.display = 'none';
+  }
+
+  function pickConcert(date) {
+    selDate = date;
+    document.querySelectorAll('.sl-concert-card').forEach(c =>
+      c.classList.toggle('active', c.dataset.date === date)
+    );
+    const c = sorted.find(x => x.date === date);
+    document.getElementById('setlist-title').textContent = c.venue;
+    document.getElementById('setlist-date').textContent = c.date;
+
+    const sl = document.getElementById('song-list');
+    sl.innerHTML = c.setlist.map((s, i) => {
+      const d = daysSince(s, date);
+      const pill = d === null
+        ? `<span class="sl-pill sl-pill-first">첫 공연</span>`
+        : `<span class="sl-pill sl-pill-days">${d}일 만에</span>`;
+      return `<div class="sl-song-row" data-song="${s}">
+        <div class="sl-song-left">
+          <span class="sl-song-num">${i + 1}</span>
+          <span class="sl-song-name">${s}</span>
+        </div>
+        <div class="sl-song-right">${pill}<span class="sl-caret">›</span></div>
+      </div>`;
+    }).join('');
+    sl.querySelectorAll('.sl-song-row').forEach(r =>
+      r.addEventListener('click', () => openModal(r.dataset.song))
+    );
+
+    const sec = document.getElementById('setlist-section');
+    sec.style.display = 'block';
+    sec.classList.remove('sl-fade-in');
+    void sec.offsetWidth;
+    sec.classList.add('sl-fade-in');
+  }
+
+  function openModal(song) {
+    const hist = getHistory(song);
+    document.getElementById('modal-song').textContent = song;
+    document.getElementById('modal-summary').innerHTML = `총 <b>${hist.length}회</b> 공연`;
+    document.getElementById('modal-body').innerHTML = hist.map((c, i) =>
+      `<div class="sl-hist-row">
+        <div class="sl-hist-idx">${i + 1}</div>
+        <div>
+          <div class="sl-hist-date">${c.date}</div>
+          <div class="sl-hist-venue">${c.venue}</div>
+          <div class="sl-hist-order">셋리스트 ${c.order}번째</div>
+        </div>
+      </div>`
+    ).join('');
+    document.getElementById('modal-wrap').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal-wrap').classList.remove('open');
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-wrap').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-wrap')) closeModal();
+  });
+
+  renderYears();
+</script>

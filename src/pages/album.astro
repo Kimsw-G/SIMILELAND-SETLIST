@@ -1,0 +1,850 @@
+---
+import { concerts as rawConcerts } from '../data/concerts.json';
+import { albums as rawAlbums } from '../data/albums.json';
+
+const concerts = rawConcerts
+  .map(c => ({ ...c, dateObj: new Date(c.date) }))
+  .sort((a, b) => b.dateObj - a.dateObj);
+
+const albums = [...rawAlbums].sort((a, b) => {
+  if (!a.releaseDate && !b.releaseDate) return 0;
+  if (!a.releaseDate) return 1;
+  if (!b.releaseDate) return -1;
+  return new Date(b.releaseDate) - new Date(a.releaseDate);
+});
+---
+
+<style is:global>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap');
+
+  :root {
+    --sl-bg: #f5f0e8;
+    --sl-surface: #ffffff;
+    --sl-border: #e0d8cc;
+    --sl-border-hover: #b0a898;
+    --sl-text: #1a1710;
+    --sl-text-muted: #7a7060;
+    --sl-text-faint: #b0a898;
+    --sl-accent: #d4522a;
+    --sl-accent-bg: #fdf0eb;
+    --sl-accent-text: #922010;
+    --sl-teal: #2a7a6a;
+    --sl-teal-bg: #eaf4f1;
+    --sl-yellow: #e8c840;
+    --sl-yellow-bg: #fdf8e1;
+    --sl-purple: #6a3aaa;
+    --sl-purple-bg: #f0eafa;
+  }
+
+  body {
+    background: var(--sl-bg);
+  }
+
+  .sl-wrap {
+    /* padding: 2.5rem 0 5rem; */
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .sl-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px dashed var(--sl-border);
+  }
+
+  .sl-artist {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--sl-text);
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+
+  .sl-artist span {
+    color: var(--sl-accent);
+  }
+
+  .sl-sub {
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    margin-top: 5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── Nav ── */
+  .sl-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .sl-nav-btn {
+    padding: 8px 22px;
+    border-radius: 99px;
+    border: 1.5px solid var(--sl-border);
+    background: var(--sl-surface);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sl-text-muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .sl-nav-btn:hover {
+    border-color: var(--sl-accent);
+    color: var(--sl-accent);
+    background: var(--sl-accent-bg);
+  }
+
+  .sl-nav-btn.active {
+    background: var(--sl-accent);
+    color: #fff;
+    border-color: var(--sl-accent);
+  }
+
+  /* ── Filter chips ── */
+  .sl-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--sl-text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .sl-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .sl-chip {
+    padding: 7px 18px;
+    border-radius: 99px;
+    border: 1.5px solid var(--sl-border);
+    background: var(--sl-surface);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sl-text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sl-chip:hover {
+    border-color: var(--sl-accent);
+    color: var(--sl-accent);
+    background: var(--sl-accent-bg);
+  }
+
+  .sl-chip.active {
+    background: var(--sl-accent);
+    color: #fff;
+    border-color: var(--sl-accent);
+  }
+
+  /* ── Album grid ── */
+  .al-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 2.5rem;
+  }
+
+  .al-card {
+    border: 1.5px solid var(--sl-border);
+    border-radius: 20px;
+    background: var(--sl-surface);
+    cursor: pointer;
+    transition: all 0.15s;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .al-card:hover {
+    border-color: var(--sl-border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+  }
+
+  .al-card.active {
+    border-color: var(--al-card-color, var(--sl-accent));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--al-card-color, var(--sl-accent)) 15%, transparent);
+  }
+
+  .al-card-accent-bar {
+    height: 4px;
+    background: var(--al-card-color, var(--sl-accent));
+  }
+
+  .al-card-body {
+    padding: 14px 16px 16px;
+  }
+
+  .al-art-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    background: var(--sl-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .al-art-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .al-art-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ede8df 0%, #d8d0c4 100%);
+    font-size: 40px;
+    color: var(--sl-text-faint);
+  }
+
+  .al-unreleased-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(26,23,16,0.7);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border-radius: 99px;
+  }
+
+  .al-type-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 99px;
+    margin-bottom: 6px;
+    background: var(--sl-bg);
+    color: var(--sl-text-muted);
+    border: 1px solid var(--sl-border);
+  }
+
+  .al-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sl-text);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .al-meta {
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .al-meta-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--sl-text-faint);
+    flex-shrink: 0;
+  }
+
+  /* ── Tracklist panel ── */
+  .al-panel {
+    display: none;
+    border: 1.5px solid var(--sl-border);
+    border-radius: 20px;
+    background: var(--sl-surface);
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+  }
+
+  .al-panel.open {
+    display: block;
+    animation: slFadeIn 0.2s ease;
+  }
+
+  .al-panel-top-bar {
+    height: 4px;
+    background: var(--al-panel-color, var(--sl-accent));
+  }
+
+  .al-panel-head {
+    padding: 16px 20px 14px;
+    border-bottom: 1.5px dashed var(--sl-border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .al-panel-art {
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--sl-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--sl-text-faint);
+  }
+
+  .al-panel-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .al-panel-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .al-panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--sl-text);
+  }
+
+  .al-panel-meta {
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    margin-top: 2px;
+  }
+
+  .al-panel-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sl-border);
+    background: var(--sl-bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--sl-text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    flex-shrink: 0;
+    transition: all 0.12s;
+  }
+
+  .al-panel-close:hover {
+    border-color: var(--sl-accent);
+    color: var(--sl-accent);
+    background: var(--sl-accent-bg);
+  }
+
+  /* ── Track rows ── */
+  .al-track-list {
+    padding: 6px 0;
+  }
+
+  .al-track-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 20px;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background 0.12s;
+    border-bottom: 1px solid var(--sl-border);
+  }
+
+  .al-track-row:last-child {
+    border-bottom: none;
+  }
+
+  .al-track-row:hover {
+    background: var(--sl-bg);
+  }
+
+  .al-track-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .al-track-num {
+    font-size: 11px;
+    color: var(--sl-text-faint);
+    width: 16px;
+    text-align: right;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .al-track-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--sl-text);
+  }
+
+  .al-track-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .al-perf-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .al-perf-badge.has-perf {
+    background: var(--sl-accent-bg);
+    color: var(--sl-accent-text);
+    border: 1px solid #f0c8b8;
+  }
+
+  .al-perf-badge.no-perf {
+    background: var(--sl-bg);
+    color: var(--sl-text-faint);
+    border: 1px solid var(--sl-border);
+  }
+
+  .al-track-caret {
+    font-size: 14px;
+    color: var(--sl-text-faint);
+  }
+
+  /* ── Modal ── */
+  .sl-modal-wrap {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(20, 15, 5, 0.5);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sl-modal-wrap.open {
+    display: flex;
+  }
+
+  .sl-modal {
+    background: var(--sl-surface);
+    border-radius: 20px;
+    border: 2px solid var(--sl-border);
+    width: 380px;
+    max-width: 90vw;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sl-modal-top-bar {
+    height: 4px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--sl-accent) 0px, var(--sl-accent) 20px,
+      var(--sl-yellow) 20px, var(--sl-yellow) 40px,
+      var(--sl-teal) 40px, var(--sl-teal) 60px,
+      var(--sl-purple) 60px, var(--sl-purple) 80px
+    );
+    flex-shrink: 0;
+  }
+
+  .sl-modal-head {
+    padding: 16px 20px 12px;
+    border-bottom: 1.5px dashed var(--sl-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .sl-modal-song {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--sl-text);
+  }
+
+  .sl-modal-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sl-border);
+    background: var(--sl-bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--sl-text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    flex-shrink: 0;
+    transition: all 0.12s;
+  }
+
+  .sl-modal-close:hover {
+    border-color: var(--sl-accent);
+    color: var(--sl-accent);
+    background: var(--sl-accent-bg);
+  }
+
+  .sl-modal-summary {
+    padding: 10px 20px;
+    background: var(--sl-bg);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--sl-text-muted);
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--sl-border);
+  }
+
+  .sl-modal-summary b {
+    color: var(--sl-text);
+  }
+
+  .sl-modal-body {
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  .sl-hist-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--sl-border);
+    transition: background 0.1s;
+  }
+
+  .sl-hist-row:last-child { border-bottom: none; }
+  .sl-hist-row:hover { background: var(--sl-bg); }
+
+  .sl-hist-idx {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--sl-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .sl-hist-date {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sl-text);
+  }
+
+  .sl-hist-venue {
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    margin-top: 2px;
+  }
+
+  .sl-hist-order {
+    font-size: 11px;
+    color: var(--sl-text-faint);
+    margin-top: 2px;
+  }
+
+  .sl-modal-empty {
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--sl-text-faint);
+    font-size: 13px;
+  }
+
+  .sl-fade-in {
+    animation: slFadeIn 0.2s ease;
+  }
+
+  @keyframes slFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .sl-info{
+    font-size: 12px;
+    color: var(--sl-text-muted);
+    margin-bottom: 35px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+</style>
+
+<meta charset="UTF-8" />
+
+<div class="sl-wrap">
+  <div class="sl-header">
+    <div class="sl-info">문의 @castlewook56</div>
+    <div class="sl-artist">심아일랜드<span>.</span></div>
+    <div class="sl-sub">album archive</div>
+  </div>
+
+  <!-- 네비게이션 -->
+  <nav class="sl-nav">
+    <a href="/" class="sl-nav-btn">셋리스트</a>
+    <a href="/album" class="sl-nav-btn active">앨범</a>
+  </nav>
+
+  <!-- 타입 필터 -->
+  <div class="sl-section-label">종류</div>
+  <div class="sl-chip-row" id="type-chips"></div>
+
+  <!-- 앨범 그리드 -->
+  <div class="al-grid" id="album-grid"></div>
+
+  <!-- 트랙리스트 패널 -->
+  <div class="al-panel" id="track-panel">
+    <div class="al-panel-top-bar" id="panel-top-bar"></div>
+    <div class="al-panel-head">
+      <div class="al-panel-art" id="panel-art"></div>
+      <div class="al-panel-info">
+        <div class="al-panel-title" id="panel-title"></div>
+        <div class="al-panel-meta" id="panel-meta"></div>
+      </div>
+      <button class="al-panel-close" id="panel-close">×</button>
+    </div>
+    <div class="al-track-list" id="track-list"></div>
+  </div>
+</div>
+
+<!-- 공연 히스토리 모달 -->
+<div class="sl-modal-wrap" id="modal-wrap">
+  <div class="sl-modal">
+    <div class="sl-modal-top-bar"></div>
+    <div class="sl-modal-head">
+      <div class="sl-modal-song" id="modal-song"></div>
+      <button class="sl-modal-close" id="modal-close">×</button>
+    </div>
+    <div class="sl-modal-summary" id="modal-summary"></div>
+    <div class="sl-modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ concerts: rawConcerts, albums }}>
+  const sorted = concerts
+    .map(c => ({ ...c, dateObj: new Date(c.date) }))
+    .sort((a, b) => b.dateObj - a.dateObj);
+
+  let selType = 'all';
+  let selAlbumId = null;
+
+  // ── 공연 횟수 / 히스토리 계산 ──
+  function getHistory(song) {
+    return sorted
+      .filter(c => c.setlist.includes(song))
+      .map(c => ({ ...c, order: c.setlist.indexOf(song) + 1 }));
+  }
+
+  // ── 타입 목록 ──
+  function getTypes() {
+    const types = [...new Set(albums.map(a => a.type))];
+    return types;
+  }
+
+  // ── 필터된 앨범 ──
+  function filteredAlbums() {
+    if (selType === 'all') return albums;
+    return albums.filter(a => a.type === selType);
+  }
+
+  // ── 날짜 포맷 ──
+  function formatDate(dateStr) {
+    if (!dateStr) return '미발매';
+    const d = new Date(dateStr);
+    return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  // ── 앨범 아트 HTML ──
+  function artHTML(album, size = 'full') {
+    if (album.image) {
+      return `<img src="${album.image}" alt="${album.title}" />`;
+    }
+    return `<div class="al-art-placeholder">🎵</div>`;
+  }
+
+  // ── 타입 칩 렌더 ──
+  function renderTypeChips() {
+    const el = document.getElementById('type-chips');
+    const types = getTypes();
+    el.innerHTML = [
+      `<div class="sl-chip${selType === 'all' ? ' active' : ''}" data-t="all">전체</div>`,
+      ...types.map(t =>
+        `<div class="sl-chip${selType === t ? ' active' : ''}" data-t="${t}">${t}</div>`
+      )
+    ].join('');
+    el.querySelectorAll('.sl-chip').forEach(c =>
+      c.addEventListener('click', () => {
+        selType = c.dataset.t;
+        selAlbumId = null;
+        renderTypeChips();
+        renderAlbumGrid();
+        closePanel();
+      })
+    );
+  }
+
+  // ── 앨범 그리드 렌더 ──
+  function renderAlbumGrid() {
+    const grid = document.getElementById('album-grid');
+    const list = filteredAlbums();
+    grid.innerHTML = list.map(album => {
+      const totalPerf = album.tracks.reduce((sum, t) => sum + getHistory(t).length, 0);
+      const isUnreleased = !album.releaseDate;
+      return `
+        <div class="al-card${selAlbumId === album.id ? ' active' : ''}"
+             data-id="${album.id}"
+             style="--al-card-color: ${album.color}">
+          <div class="al-card-accent-bar"></div>
+          <div class="al-card-body">
+            <div class="al-art-wrap">
+              ${artHTML(album)}
+              ${isUnreleased ? `<div class="al-unreleased-badge">미발매</div>` : ''}
+            </div>
+            <div class="al-type-badge">${album.type}</div>
+            <div class="al-title">${album.title}</div>
+            <div class="al-meta">
+              <span>${formatDate(album.releaseDate)}</span>
+              <span class="al-meta-dot"></span>
+              <span>${album.tracks.length}곡</span>
+              <span class="al-meta-dot"></span>
+              <span>${totalPerf}회 공연</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    grid.querySelectorAll('.al-card').forEach(c =>
+      c.addEventListener('click', () => pickAlbum(c.dataset.id))
+    );
+  }
+
+  // ── 앨범 선택 → 트랙 패널 열기 ──
+  function pickAlbum(id) {
+    if (selAlbumId === id) {
+      selAlbumId = null;
+      closePanel();
+      renderAlbumGrid();
+      return;
+    }
+    selAlbumId = id;
+    renderAlbumGrid();
+
+    const album = albums.find(a => a.id === id);
+
+    // 패널 상단 색상
+    document.getElementById('panel-top-bar').style.background = album.color;
+
+    // 패널 아트
+    const artEl = document.getElementById('panel-art');
+    artEl.innerHTML = album.image
+      ? `<img src="${album.image}" alt="${album.title}" />`
+      : '🎵';
+
+    // 패널 헤더
+    document.getElementById('panel-title').textContent = album.title;
+    document.getElementById('panel-meta').textContent =
+      `${album.type} · ${formatDate(album.releaseDate)} · ${album.tracks.length}트랙`;
+
+    // 트랙 목록
+    const tl = document.getElementById('track-list');
+    tl.innerHTML = album.tracks.map((song, i) => {
+      const hist = getHistory(song);
+      const count = hist.length;
+      const badgeClass = count > 0 ? 'has-perf' : 'no-perf';
+      const badgeText = count > 0 ? `${count}회 공연` : '미공연';
+      return `<div class="al-track-row" data-song="${song}">
+        <div class="al-track-left">
+          <span class="al-track-num">${i + 1}</span>
+          <span class="al-track-name">${song}</span>
+        </div>
+        <div class="al-track-right">
+          <span class="al-perf-badge ${badgeClass}">${badgeText}</span>
+          ${count > 0 ? `<span class="al-track-caret">›</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+
+    tl.querySelectorAll('.al-track-row').forEach(r => {
+      const song = r.dataset.song;
+      if (getHistory(song).length > 0) {
+        r.addEventListener('click', () => openModal(song));
+      }
+    });
+
+    // 패널 열기
+    const panel = document.getElementById('track-panel');
+    panel.style.setProperty('--al-panel-color', album.color);
+    panel.classList.remove('open');
+    void panel.offsetWidth;
+    panel.classList.add('open');
+
+    // 패널로 스크롤
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  }
+
+  function closePanel() {
+    document.getElementById('track-panel').classList.remove('open');
+    selAlbumId = null;
+    renderAlbumGrid();
+  }
+
+  // ── 공연 히스토리 모달 ──
+  function openModal(song) {
+    const hist = getHistory(song);
+    document.getElementById('modal-song').textContent = song;
+    document.getElementById('modal-summary').innerHTML = `총 <b>${hist.length}회</b> 공연`;
+    document.getElementById('modal-body').innerHTML = hist.length === 0
+      ? `<div class="sl-modal-empty">아직 공연 기록이 없어요</div>`
+      : hist.map((c, i) =>
+          `<div class="sl-hist-row">
+            <div class="sl-hist-idx">${i + 1}</div>
+            <div>
+              <div class="sl-hist-date">${c.date}</div>
+              <div class="sl-hist-venue">${c.venue}</div>
+              <div class="sl-hist-order">셋리스트 ${c.order}번째</div>
+            </div>
+          </div>`
+        ).join('');
+    document.getElementById('modal-wrap').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal-wrap').classList.remove('open');
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('panel-close').addEventListener('click', closePanel);
+  document.getElementById('modal-wrap').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-wrap')) closeModal();
+  });
+
+  // ── 초기 렌더 ──
+  renderTypeChips();
+  renderAlbumGrid();
+</script>

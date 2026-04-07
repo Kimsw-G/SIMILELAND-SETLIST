@@ -1,0 +1,102 @@
+{
+  "albums": [
+    {
+      "id": "single-1",
+      "title": "아이를 찾습니다",
+      "releaseDate": "2023-03-15",
+      "type": "싱글",
+      "image": "/images/albums/single-1.webp",
+      "color": "#2a7a6a",
+      "tracks": [
+        "아이를 찾습니다"
+      ]
+    },
+    {
+      "id": "single-2",
+      "title": "금연 禁煙",
+      "releaseDate": "2023-10-05",
+      "type": "싱글",
+      "image": "/images/albums/single-2.webp",
+      "color": "#2a7a6a",
+      "tracks": [
+        "금연"
+      ]
+    },
+    {
+      "id": "single-3",
+      "title": "애도반응",
+      "releaseDate": "2023-11-24",
+      "type": "싱글",
+      "image": "/images/albums/single-3.webp",
+      "color": "#2a7a6a",
+      "tracks": [
+        "애도반응"
+      ]
+    },
+    {
+      "id": "single-4",
+      "title": "별과 당신",
+      "releaseDate": "2023-10-27",
+      "type": "싱글",
+      "image": "/images/albums/single-4.webp",
+      "color": "#2a7a6a",
+      "tracks": [
+        "별과 당신"
+      ]
+    },
+    {
+      "id": "ep-1",
+      "title": "Cheol-Su",
+      "releaseDate": "2024-08-19",
+      "type": "EP",
+      "image": "/images/albums/ep-1.webp",
+      "color": "#d4522a",
+      "tracks": ["Univers Party", "Plant Star", "GoGo","Hoo! ha...","도레미파솔"]
+    },
+    {
+      "id": "single-5",
+      "title": "Worriors",
+      "releaseDate": "2025-04-29",
+      "type": "싱글",
+      "image": "/images/albums/single-5.webp",
+      "color": "#2a7a6a",
+      "tracks": [
+        "Worriros","S.O.C"
+      ]
+    },
+    {
+      "id": "ep-2",
+      "title": "Young-Hee",
+      "releaseDate": "2025-10-30",
+      "type": "EP",
+      "image": "/images/albums/ep-2.jpg",
+      "color": "#6a3aaa",
+      "tracks": ["우리 엄마도 모르는 비밀","나락","정신과에 가볼까","밑 빠진 독","Balloon"]
+    },
+    {
+      "id": "unreleased-1",
+      "title": "미공개 트랙",
+      "releaseDate": null,
+      "type": "미발매",
+      "image": null,
+      "color": "#7a7060",
+      "tracks": [
+        "oh wah",
+        "은퇴록",
+        "Happy Birthday"
+      ]
+    },
+    {
+      "id": "laffa-1",
+      "title": "라파 트랙",
+      "releaseDate": null,
+      "type": "미발매",
+      "image": null,
+      "color": "#7a7060",
+      "tracks": [
+        "젓가락도 짝이있는데 (Laffa)",
+        "매운 떡볶이 (Laffa)"
+      ]
+    }
+  ]
+}
