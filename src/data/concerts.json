@@ -292,9 +292,7 @@
     {
       "date": "2025-09-19",
       "venue": "버스킹트래블러X노들섬 - 노들섬",
-      "setlist": [
-        ""
-      ]
+      "setlist": ["Hoo! ha...","금연","멋진헛간(COVER)","아이를 찾습니다","Champagne supernova(COVER)"]
     },
     {
       "date": "2025-09-13",
@@ -328,6 +326,7 @@
         "우리 엄마도 모르는 비밀",
         "나락",
         "밑 빠진 독",
+        "젓가락도 짝이있는데 (Laffa)",
         "S.O.C",
         "도레미파솔",
         "Free love(COVER)"
@@ -382,7 +381,7 @@
     {
       "date": "2025-07-18",
       "venue": "밴드 디스커버리 최종 경연 - 홍대 상상마당",
-      "setlist": []
+      "setlist": ["Univers Party","도레미파솔"]
     },
     {
       "date": "2025-07-11",
@@ -603,7 +602,7 @@
       "date": "2025-04-05",
       "venue": "뮤니브 콘서트 [청춘기행] 축하공연 - 팡타개라지",
       "setlist": [
-        ""
+        "Univers Party","Hoo! ha...","아이를 찾습니다","도레미파솔"
       ]
     },
     {
@@ -713,17 +712,17 @@
     {
       "date": "2025-02-14",
       "venue": "와글와글 Jackingcong X Simile_Land",
-      "setlist": []
+      "setlist": ["Plant Star","Univers Party","금연","GoGo","Happy Birthday","밑 빠진 독","아이를 찾습니다","Worriors","S.O.C","도레미파솔","Champagne supernova(COVER)"]
     },
     {
       "date": "2025-02-08",
       "venue": "유기체 Early Bird Live (Vol.8) - 부산 유기체",
-      "setlist": []
+      "setlist": ["Univers Party","금연","GoGo","Hoo! ha...","아이를 찾습니다","Plant Star","Worriors","S.O.C","도레미파솔","밑 빠진 독"]
     },
     {
       "date": "2025-02-07",
       "venue": "2025 경록절 COME TOGHETHER - 무신사개러지",
-      "setlist": []
+      "setlist": ["Univers Party","Hoo! ha...","생일축하합니다 to 경록", "아이를 찾습니다"]
     },
     {
       "date": "2025-01-31",
@@ -733,7 +732,7 @@
     {
       "date": "2025-01-16",
       "venue": "Our Universe Party - 홍대 벨로주",
-      "setlist": ["Univers Party","Hoo! ha...","금연","GoGo","우리 엄마도 모르는 비밀","밑 빠진 독","아이를 찾습니다","Happy Birthday", "Champagne supernova", "Plant Star", "Worriors","S.O.C","도레미파솔","Part time lover(COVER)"]
+      "setlist": ["Univers Party","Hoo! ha...","금연","GoGo","우리 엄마도 모르는 비밀","밑 빠진 독","아이를 찾습니다","Happy Birthday", "Champagne supernova(COVER)", "Plant Star", "Worriors","S.O.C","도레미파솔","Part time lover(COVER)"]
     }
   ]
 }

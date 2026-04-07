@@ -15,6 +15,110 @@ const albums = [...rawAlbums].sort((a, b) => {
 ---
 
 <style is:global>
+@media (max-width: 640px) {
+  .sl-wrap {
+    padding: 18px;
+  }
+
+  /* 🔥 헤더 키움 */
+  .sl-artist {
+    font-size: 28px;
+  }
+
+  .sl-sub {
+    font-size: 12px;
+  }
+
+  /* 🔥 버튼 크게 */
+  .sl-nav-btn {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+
+  /* 🔥 연도칩 크게 */
+  .sl-chip {
+    font-size: 14px;
+    padding: 10px 18px;
+  }
+
+  /* 🔥 공연 카드 = 크게 + 터치 쉽게 */
+  .sl-concert-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .sl-concert-card {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .sl-cc-venue {
+    font-size: 16px;
+  }
+
+  .sl-cc-date {
+    font-size: 13px;
+  }
+
+  .sl-cc-count {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  /* 🔥 셋리스트 크게 */
+  .sl-song-row {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .sl-song-name {
+    font-size: 15px;
+  }
+
+  .sl-song-num {
+    font-size: 12px;
+  }
+
+  /* 🔥 pill 크게 */
+  .sl-pill {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+
+  .sl-caret {
+    font-size: 16px;
+  }
+
+  /* 🔥 모달도 크게 */
+  .sl-modal {
+    height: 75dvh;
+    max-height: 75dvh;
+  }
+
+  .sl-modal-song {
+    font-size: 18px;
+  }
+
+  .sl-hist-row {
+    padding: 14px 20px;
+  }
+
+  .sl-hist-date {
+    font-size: 14px;
+  }
+
+  .sl-hist-venue {
+    font-size: 13px;
+  }
+
+  /* 🔥 터치 피드백 추가 */
+  .sl-chip:active,
+  .sl-nav-btn:active,
+  .sl-concert-card:active,
+  .sl-song-row:active {
+    transform: scale(0.97);
+  }
+}
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap');
 
   :root {
@@ -452,7 +556,7 @@ const albums = [...rawAlbums].sort((a, b) => {
     border: 2px solid var(--sl-border);
     width: 380px;
     max-width: 90vw;
-    max-height: 80vh;
+    max-height: 80dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
