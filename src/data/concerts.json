@@ -1,6 +1,11 @@
 {
   "concerts": [
     {
+      "date": "2026-04-11",
+      "venue": "춘천 상상실현 페스티벌 2026",
+      "setlist": ["Univers Party","Hoo! ha...","나","밑 빠진 독","oh wah","Worrors","S.O.C","아이를 찾습니다", "도레미파솔"]
+    },
+    {
       "date": "2026-04-04",
       "venue": "사운드 오브 더 가든 - 용산아이파크몰",
       "setlist": [
