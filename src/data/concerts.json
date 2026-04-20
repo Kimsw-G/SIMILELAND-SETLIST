@@ -1,6 +1,11 @@
 {
   "concerts": [
     {
+      "date": "2026-04-19",
+      "venue": "제24회 경기마라톤대회",
+      "setlist": ["oh wah","Univers Party","Hoo! ha...","아이를 찾습니다", "도레미파솔"]
+    },
+    {
       "date": "2026-04-11",
       "venue": "춘천 상상실현 페스티벌 2026",
       "setlist": ["Univers Party","Hoo! ha...","나락","밑 빠진 독","oh wah","Worriors","S.O.C","아이를 찾습니다", "도레미파솔"]
