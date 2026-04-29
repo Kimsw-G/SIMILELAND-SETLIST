@@ -65,6 +65,17 @@
       ]
     },
     {
+      "id": "single-6",
+      "title": "OhWah!",
+      "releaseDate": "2026-04-23",
+      "type": "싱글",
+      "image": "/images/albums/single-6.webp",
+      "color": "#2a7a6a",
+      "tracks": [
+        "OhWah!"
+      ]
+    },
+    {
       "id": "ep-2",
       "title": "Young-Hee",
       "releaseDate": "2025-10-30",
@@ -81,7 +92,6 @@
       "image": null,
       "color": "#7a7060",
       "tracks": [
-        "oh wah",
         "은퇴록",
         "Happy Birthday"
       ]

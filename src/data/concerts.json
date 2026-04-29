@@ -1,14 +1,54 @@
 {
   "concerts": [
     {
+      "date": "2026-06-14",
+      "venue": "울산뮤직페스티벌 - 태화강",
+      "setlist": []
+    },
+    {
+      "date": "2026-05-30",
+      "venue": "ASIAN POP FESTIVAL - 파라다이스시티",
+      "setlist": []
+    },
+    {
+      "date": "2026-05-21",
+      "venue": "헬로루키 - 현대카드 언더스테이지",
+      "setlist": []
+    },
+    {
+      "date": "2026-05-16",
+      "venue": "이승윤 콘서트 밖 - KINTEX",
+      "setlist": []
+    },
+    {
+      "date": "2026-05-14",
+      "venue": "29CM STAGE 팔칠댄스 - 무신사 개러지",
+      "setlist": []
+    },
+    {
+      "date": "2026-05-13",
+      "venue": "뒤란 - 울산문화예술회관 ",
+      "setlist": []
+    },
+    {
+      "date": "2026-05-07",
+      "venue": "Festival NADA - 홍대 상상마당",
+      "setlist": []
+    },
+    {
+      "date": "2026-04-26",
+      "venue": "히어로락페스티벌 - 문화비축기지",
+      "setlist": ["OhWah!","S.O.C","Hoo! ha...","나락","밑 빠진 독","아이를 찾습니다", "도레미파솔","Univers Party"]
+    },
+    {
       "date": "2026-04-19",
       "venue": "제24회 경기마라톤대회",
-      "setlist": ["oh wah","Univers Party","Hoo! ha...","아이를 찾습니다", "도레미파솔"]
+      "setlist": ["OhWah!","Univers Party","Hoo! ha...","아이를 찾습니다", "도레미파솔"]
     },
     {
       "date": "2026-04-11",
       "venue": "춘천 상상실현 페스티벌 2026",
-      "setlist": ["Univers Party","Hoo! ha...","나락","밑 빠진 독","oh wah","Worriors","S.O.C","아이를 찾습니다", "도레미파솔"]
+      "setlist": ["Univers Party","Hoo! ha...","나락","밑 빠진 독","OhWah!","Worriors","S.O.C","아이를 찾습니다", "도레미파솔"]
     },
     {
       "date": "2026-04-04",
@@ -19,7 +59,7 @@
         "Hoo! ha...",
         "GoGo",
         "금연",
-        "oh wah",
+        "OhWah!",
         "아이를 찾습니다",
         "S.O.C",
         "도레미파솔",
@@ -42,7 +82,7 @@
         "Mind Game(COVER)",
         "도레미파솔",
         "Balloon",
-        "oh wah"
+        "OhWah!"
       ]
     },
     {
@@ -142,7 +182,7 @@
     },
     {
       "date": "2025-11-23",
-      "venue": "29CM STAGE - 무신사 개러지",
+      "venue": "29CM STAGE with 극동아시아타이거즈 - 무신사 개러지",
       "setlist": [
         "Univers Party",
         "Hoo! ha...",
